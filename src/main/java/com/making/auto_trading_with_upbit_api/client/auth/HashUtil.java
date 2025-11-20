@@ -12,6 +12,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.NONE)
 public final class HashUtil {
 
+    private static final char[] HEX_ARRAY = "0123456789abcdef".toCharArray();
     private static final String SHA_512 = "SHA-512";
 
     /**
@@ -29,12 +30,14 @@ public final class HashUtil {
 
     /**
      * 바이트 배열을 16진수 문자열로 변환
+     * String.format("%02x", b) 대신 미리 할당한 char 배열에 HEX 테이블로 직접 채워 넣어 GC·포맷팅 오버헤드 감소
      */
     private static String bytesToHex(final byte[] bytes) {
-        final StringBuilder result = new StringBuilder();
-        for (final byte b : bytes) {
-            result.append(String.format("%02x", b));
+        final char[] hexChars = new char[bytes.length * 2];
+        for (int i = 0; i < bytes.length; i++) {
+            final int v = bytes[i] & 0xFF;
+            hexChars[i * 2] = HEX_ARRAY[v >>> 4];
+            hexChars[i * 2 + 1] = HEX_ARRAY[v & 0x0F];
         }
-        return result.toString();
-    }
-}
+        return new String(hexChars);
+    }}
