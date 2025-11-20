@@ -25,6 +25,8 @@ public enum UpbitApiPath {
 
     // Orders
     ORDERS("/v1/orders", HttpMethod.GET, true),
+    ORDERS_POST("/v1/orders", HttpMethod.POST, true),
+    ORDERS_TEST("/v1/orders/test", HttpMethod.POST, true),
     ORDERS_OPEN("/v1/orders/open", HttpMethod.GET, true);
 
     private final String path;
