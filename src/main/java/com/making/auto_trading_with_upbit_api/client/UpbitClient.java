@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.making.auto_trading_with_upbit_api.constants.ApiConstants;
 import com.making.auto_trading_with_upbit_api.dto.UpbitApiResponse;
+import java.util.List;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatusCode;
@@ -20,10 +22,19 @@ public class UpbitClient {
     private final RestClient restClientForUpbit;
     private final ObjectMapper objectMapper;
 
-    public UpbitApiResponse requestGet(final String path) {
-
+    public UpbitApiResponse requestGet(
+            final String path,
+            final Map<String, List<String>> params
+    ) {
         final ResponseEntity<String> entity = restClientForUpbit.get()
-                .uri(path)
+                .uri(uriBuilder -> {
+                    uriBuilder.path(path);
+                    if (params.isEmpty()) {
+                        return uriBuilder.build();
+                    }
+                    params.forEach((key, values) -> values.forEach(value -> uriBuilder.queryParam(key, value)));
+                    return uriBuilder.build();
+                })
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .toEntity(String.class);
@@ -31,6 +42,12 @@ public class UpbitClient {
         log.debug(entity.toString());
 
         return parseResponse(entity);
+    }
+
+    public UpbitApiResponse requestGet(
+            final String path
+    ) {
+        return requestGet(path, null);
     }
 
     private UpbitApiResponse parseResponse(final ResponseEntity<String> responseEntity) {
