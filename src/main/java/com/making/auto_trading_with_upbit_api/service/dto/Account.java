@@ -1,5 +1,6 @@
 package com.making.auto_trading_with_upbit_api.service.dto;
 
+import com.making.auto_trading_with_upbit_api.constants.CurrencyCode;
 import java.math.BigDecimal;
 
 /**
@@ -31,6 +32,6 @@ public record Account(
      * KRW 계정 여부
      */
     public boolean isKrw() {
-        return "KRW".equals(currency);
+        return CurrencyCode.KRW.matches(currency);
     }
 }

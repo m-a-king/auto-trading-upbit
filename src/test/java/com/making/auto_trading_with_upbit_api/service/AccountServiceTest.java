@@ -3,6 +3,7 @@ package com.making.auto_trading_with_upbit_api.service;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.making.auto_trading_with_upbit_api.config.TestContainersConfiguration;
+import com.making.auto_trading_with_upbit_api.constants.CurrencyCode;
 import com.making.auto_trading_with_upbit_api.service.dto.Account;
 import java.math.BigDecimal;
 import java.util.List;
@@ -49,10 +50,10 @@ class AccountServiceTest {
     @DisplayName("특정 코인 보유량 조회 - KRW")
     void testGetCoinBalanceKrw() {
         // given
-        final String currency = "KRW";
+        final CurrencyCode currencyCode = CurrencyCode.KRW;
 
         // when
-        final BigDecimal balance = accountService.getCoinBalance(currency);
+        final BigDecimal balance = accountService.getCoinBalance(currencyCode);
 
         // then
         assertThat(balance).isNotNull();
@@ -63,10 +64,10 @@ class AccountServiceTest {
     @DisplayName("특정 코인 보유량 조회 - 보유하지 않은 코인")
     void testGetCoinBalanceNotOwned() {
         // given
-        final String currency = "BTC";
+        final CurrencyCode currencyCode = CurrencyCode.BTC;
 
         // when
-        final BigDecimal balance = accountService.getCoinBalance(currency);
+        final BigDecimal balance = accountService.getCoinBalance(currencyCode);
 
         // then
         assertThat(balance).isNotNull();

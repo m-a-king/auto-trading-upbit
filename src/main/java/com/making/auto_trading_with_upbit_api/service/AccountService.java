@@ -4,6 +4,7 @@ import com.making.auto_trading_with_upbit_api.client.UpbitClient;
 import com.making.auto_trading_with_upbit_api.client.constants.UpbitApiPath;
 import com.making.auto_trading_with_upbit_api.client.dto.UpbitApiResponse;
 import com.making.auto_trading_with_upbit_api.client.util.JsonConverter;
+import com.making.auto_trading_with_upbit_api.constants.CurrencyCode;
 import com.making.auto_trading_with_upbit_api.service.dto.Account;
 import java.math.BigDecimal;
 import java.util.List;
@@ -37,20 +38,20 @@ public class AccountService {
      * KRW 보유량 조회
      */
     public BigDecimal getKrwBalance() {
-        return getCoinBalance("KRW");
+        return getCoinBalance(CurrencyCode.KRW);
     }
 
     /**
      * 특정 코인 보유량 조회
      *
-     * @param currency 화폐 코드 (KRW, BTC, ETH 등)
+     * @param currencyCode 화폐 코드
      * @return 보유량 (없으면 0)
      */
-    public BigDecimal getCoinBalance(final String currency) {
+    public BigDecimal getCoinBalance(final CurrencyCode currencyCode) {
         final List<Account> accounts = getAccounts();
 
         return accounts.stream()
-                .filter(account -> currency.equals(account.currency()))
+                .filter(account -> currencyCode.matches(account.currency()))
                 .findFirst()
                 .map(Account::balance)
                 .orElse(BigDecimal.ZERO);
