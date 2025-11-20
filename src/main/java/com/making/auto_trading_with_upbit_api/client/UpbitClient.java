@@ -2,8 +2,9 @@ package com.making.auto_trading_with_upbit_api.client;
 
 import com.making.auto_trading_with_upbit_api.client.auth.JwtCreator;
 import com.making.auto_trading_with_upbit_api.client.constants.UpbitApiPath;
-import com.making.auto_trading_with_upbit_api.client.util.UpbitResponseParser;
 import com.making.auto_trading_with_upbit_api.client.dto.UpbitApiResponse;
+import com.making.auto_trading_with_upbit_api.client.util.QueryStringBuilder;
+import com.making.auto_trading_with_upbit_api.client.util.UpbitResponseParser;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -12,8 +13,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.client.RestClient.RequestHeadersSpec;
-
-import static com.making.auto_trading_with_upbit_api.client.util.QueryStringBuilder.*;
 
 @RequiredArgsConstructor
 @Component
@@ -60,7 +59,7 @@ public class UpbitClient {
             final RequestHeadersSpec<?> requestSpec
     ) {
         if (path.isPrivate()) {
-            final String queryString = build(params);
+            final String queryString = QueryStringBuilder.build(params);
             requestSpec.header(HttpHeaders.AUTHORIZATION, jwtCreator.create(queryString).WithPrefix());
         }
     }

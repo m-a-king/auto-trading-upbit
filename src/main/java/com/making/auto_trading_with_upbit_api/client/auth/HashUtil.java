@@ -29,8 +29,7 @@ public final class HashUtil {
     }
 
     /**
-     * 바이트 배열을 16진수 문자열로 변환
-     * String.format("%02x", b) 대신 미리 할당한 char 배열에 HEX 테이블로 직접 채워 넣어 GC·포맷팅 오버헤드 감소
+     * 바이트 배열을 16진수 문자열로 변환 String.format("%02x", b) 대신 미리 할당한 char 배열에 HEX 테이블로 직접 채워 넣어 GC·포맷팅 오버헤드 감소
      */
     private static String bytesToHex(final byte[] bytes) {
         final char[] hexChars = new char[bytes.length * 2];
@@ -40,4 +39,5 @@ public final class HashUtil {
             hexChars[i * 2 + 1] = HEX_ARRAY[v & 0x0F];
         }
         return new String(hexChars);
-    }}
+    }
+}
