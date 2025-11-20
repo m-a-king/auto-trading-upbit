@@ -32,7 +32,7 @@ public class UpbitClient {
             final Integer unit,
             final Map<String, List<String>> params
     ) {
-        final RequestHeadersSpec<?> spec = restClientForUpbit.get()
+        final RequestHeadersSpec<?> requestSpec = restClientForUpbit.get()
                 .uri(uriBuilder -> {
                     uriBuilder.path(path.withUnit(unit));
                     if (params.isEmpty()) {
@@ -43,9 +43,16 @@ public class UpbitClient {
                 })
                 .accept(MediaType.APPLICATION_JSON);
 
-        authenticateIfNeeded(spec, path);
+        authenticateIfNeeded(path, params, requestSpec);
 
-        return parseResponse(spec.retrieve().toEntity(String.class));
+        return parseResponse(requestSpec.retrieve().toEntity(String.class));
+    }
+
+    public UpbitApiResponse requestGet(
+            final UpbitApiPath path,
+            final Map<String, List<String>> params
+    ) {
+        return requestGet(path, null, params);
     }
 
     public UpbitApiResponse requestGet(
@@ -54,10 +61,39 @@ public class UpbitClient {
         return requestGet(path, null, Map.of());
     }
 
-    private void authenticateIfNeeded(final RequestHeadersSpec<?> spec, final UpbitApiPath path) {
+    private void authenticateIfNeeded(
+            final UpbitApiPath path,
+            final Map<String, List<String>> params,
+            final RequestHeadersSpec<?> requestSpec
+    ) {
         if (path.isPrivate()) {
-            spec.header(HttpHeaders.AUTHORIZATION, jwtCreator.create().WithPrefix());
+            final String queryString = buildQueryString(params);
+            jwtCreator.create(queryString);
+            requestSpec.header(HttpHeaders.AUTHORIZATION, jwtCreator.create(queryString).WithPrefix());
         }
+    }
+
+    private String buildQueryString(final Map<String, List<String>> params) {
+        if (params == null || params.isEmpty()) {
+            return ApiConstants.EMPTY_STRING;
+        }
+
+        final StringBuilder queryString = new StringBuilder();
+        params.forEach((key, values) -> {
+            for (final String value : values) {
+                if (!queryString.isEmpty()) {
+                    queryString.append("&");
+                }
+
+                if (values.size() > 1) {
+                    queryString.append(key).append("[]=").append(value);
+                } else {
+                    queryString.append(key).append("=").append(value);
+                }
+            }
+        });
+
+        return queryString.toString();
     }
 
     private UpbitApiResponse parseResponse(final ResponseEntity<String> responseEntity) {
@@ -76,7 +112,6 @@ public class UpbitClient {
 
         return parseErrorResponse(statusCode, body);
     }
-
 
     private UpbitApiResponse parseErrorResponse(final HttpStatusCode statusCode, final String body) {
         try {

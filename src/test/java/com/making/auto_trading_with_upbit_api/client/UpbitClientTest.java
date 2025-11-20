@@ -53,7 +53,24 @@ class UpbitClientTest {
     void testGetAccounts() {
         final UpbitApiResponse response = upbitClient.requestGet(UpbitApiPath.ACCOUNTS);
 
+        assertSuccessResponse(response);
+    }
+
+    @Test
+    @DisplayName("체결 대기 주문 목록 조회 - 인증 필요, 파라미터 포함")
+    void testGetOpenOrders() {
+        final Map<String, List<String>> params = Map.of(
+                "market", List.of("KRW-BTC"),
+                "state", List.of("wait")
+        );
+
+        final UpbitApiResponse response = upbitClient.requestGet(
+                UpbitApiPath.ORDERS_OPEN,
+                params
+        );
+
         System.out.println(response);
+
         assertSuccessResponse(response);
     }
 
