@@ -53,6 +53,23 @@ public class UpbitClient {
         return requestGet(path, null, new LinkedMultiValueMap<>());
     }
 
+    public UpbitApiResponse requestPost(
+            final UpbitApiPath path,
+            final MultiValueMap<String, String> params
+    ) {
+        validateSingleValueMap(params);
+
+        final RequestHeadersSpec<?> requestSpec = restClientForUpbit.post()
+                .uri(path.getPath())
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .body(params.toSingleValueMap());
+
+        authenticateIfNeeded(path, params, requestSpec);
+
+        return responseParser.parse(requestSpec.retrieve().toEntity(String.class));
+    }
+
     private void authenticateIfNeeded(
             final UpbitApiPath path,
             final MultiValueMap<String, String> params,
@@ -62,5 +79,16 @@ public class UpbitClient {
             final String queryString = QueryStringBuilder.build(params);
             requestSpec.header(HttpHeaders.AUTHORIZATION, jwtCreator.create(queryString).WithPrefix());
         }
+    }
+
+    private void validateSingleValueMap(final MultiValueMap<String, String> params) {
+        params.forEach((key, values) -> {
+            if (values.size() > 1) {
+                throw new IllegalArgumentException(
+                        "POST request body must have single value per key. "
+                                + "Key '" + key + "' has " + values.size() + " values"
+                );
+            }
+        });
     }
 }
