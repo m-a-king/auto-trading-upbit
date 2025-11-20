@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class UpbitResponseParser {
 
-    private final ObjectMapper objectMapper;
+    private final ObjectMapper objectMapperForUpbit;
 
     public UpbitApiResponse parse(final ResponseEntity<String> responseEntity) {
         final HttpStatusCode statusCode = responseEntity.getStatusCode();
@@ -30,7 +30,7 @@ public class UpbitResponseParser {
 
     private UpbitApiResponse parseSuccessResponse(final HttpStatusCode statusCode, final String body) {
         try {
-            final JsonNode data = objectMapper.readTree(body);
+            final JsonNode data = objectMapperForUpbit.readTree(body);
             return UpbitApiResponse.success(data);
         } catch (final Exception e) {
             log.error("Failed to parse success response body", e);
@@ -40,7 +40,7 @@ public class UpbitResponseParser {
 
     private UpbitApiResponse parseErrorResponse(final HttpStatusCode statusCode, final String body) {
         try {
-            final JsonNode root = objectMapper.readTree(body);
+            final JsonNode root = objectMapperForUpbit.readTree(body);
             if (root.has(ApiConstants.ERROR)) {
                 final JsonNode error = root.get(ApiConstants.ERROR);
                 final String name = extractField(error, ApiConstants.NAME);
