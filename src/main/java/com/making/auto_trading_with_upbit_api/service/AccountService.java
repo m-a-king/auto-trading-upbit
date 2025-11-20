@@ -1,13 +1,11 @@
 package com.making.auto_trading_with_upbit_api.service;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.making.auto_trading_with_upbit_api.client.UpbitClient;
 import com.making.auto_trading_with_upbit_api.client.constants.UpbitApiPath;
 import com.making.auto_trading_with_upbit_api.client.dto.UpbitApiResponse;
+import com.making.auto_trading_with_upbit_api.client.util.JsonConverter;
 import com.making.auto_trading_with_upbit_api.service.dto.Account;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +17,7 @@ import org.springframework.stereotype.Service;
 public class AccountService {
 
     private final UpbitClient upbitClient;
-    private final ObjectMapper objectMapperForUpbit;
+    private final JsonConverter jsonConverter;
 
     /**
      * 전체 잔고 조회
@@ -28,7 +26,7 @@ public class AccountService {
         final UpbitApiResponse response = upbitClient.requestGet(UpbitApiPath.ACCOUNTS);
 
         if (response.success()) {
-            return parseAccounts(response.data());
+            return jsonConverter.toList(response.data(), Account.class);
         }
 
         log.error("Failed to get accounts: {} - {}", response.errorName(), response.errorMessage());
@@ -63,24 +61,5 @@ public class AccountService {
      */
     public BigDecimal getAvailableBuyAmount() {
         return getKrwBalance();
-    }
-
-    private List<Account> parseAccounts(final JsonNode data) {
-        final List<Account> accounts = new ArrayList<>();
-
-        if (data == null || !data.isArray()) {
-            return accounts;
-        }
-
-        for (final JsonNode node : data) {
-            try {
-                final Account account = objectMapperForUpbit.treeToValue(node, Account.class);
-                accounts.add(account);
-            } catch (final Exception e) {
-                log.error("Failed to parse account: {}", node, e);
-            }
-        }
-
-        return accounts;
     }
 }

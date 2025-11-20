@@ -1,13 +1,11 @@
 package com.making.auto_trading_with_upbit_api.service;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.making.auto_trading_with_upbit_api.client.UpbitClient;
 import com.making.auto_trading_with_upbit_api.client.constants.UpbitApiPath;
 import com.making.auto_trading_with_upbit_api.client.dto.UpbitApiResponse;
+import com.making.auto_trading_with_upbit_api.client.util.JsonConverter;
 import com.making.auto_trading_with_upbit_api.service.dto.Ticker;
 import java.math.BigDecimal;
-import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +19,7 @@ import org.springframework.util.MultiValueMap;
 public class MarketDataService {
 
     private final UpbitClient upbitClient;
-    private final ObjectMapper objectMapperForUpbit;
+    private final JsonConverter jsonConverter;
 
     /**
      * 현재가 조회 - 단일 마켓
@@ -51,12 +49,12 @@ public class MarketDataService {
 
         final UpbitApiResponse response = upbitClient.requestGet(UpbitApiPath.TICKER, params);
 
-        if (!response.success()) {
-            log.error("Failed to get tickers: {} - {}", response.errorName(), response.errorMessage());
-            throw new RuntimeException("Failed to get tickers: " + response.errorMessage());
+        if (response.success()) {
+            return jsonConverter.toList(response.data(), Ticker.class);
         }
 
-        return parseTickers(response.data());
+        log.error("Failed to get tickers: {} - {}", response.errorName(), response.errorMessage());
+        throw new RuntimeException("Failed to get tickers: " + response.errorMessage());
     }
 
     /**
@@ -68,24 +66,5 @@ public class MarketDataService {
     public BigDecimal getCurrentPrice(final String market) {
         final Ticker ticker = getTicker(market);
         return ticker.tradePrice();
-    }
-
-    private List<Ticker> parseTickers(final JsonNode data) {
-        final List<Ticker> tickers = new ArrayList<>();
-
-        if (data == null || !data.isArray()) {
-            return tickers;
-        }
-
-        for (final JsonNode node : data) {
-            try {
-                final Ticker ticker = objectMapperForUpbit.treeToValue(node, Ticker.class);
-                tickers.add(ticker);
-            } catch (final Exception e) {
-                log.error("Failed to parse ticker: {}", node, e);
-            }
-        }
-
-        return tickers;
     }
 }
