@@ -2,17 +2,21 @@ package com.making.auto_trading_with_upbit_api.client;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.making.auto_trading_with_upbit_api.client.auth.JwtCreator;
+import com.making.auto_trading_with_upbit_api.client.config.UpbitApiPath;
 import com.making.auto_trading_with_upbit_api.constants.ApiConstants;
 import com.making.auto_trading_with_upbit_api.dto.UpbitApiResponse;
 import java.util.List;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
+import org.springframework.web.client.RestClient.RequestHeadersSpec;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -21,33 +25,39 @@ public class UpbitClient {
 
     private final RestClient restClientForUpbit;
     private final ObjectMapper objectMapper;
+    private final JwtCreator jwtCreator;
 
     public UpbitApiResponse requestGet(
-            final String path,
+            final UpbitApiPath path,
+            final Integer unit,
             final Map<String, List<String>> params
     ) {
-        final ResponseEntity<String> entity = restClientForUpbit.get()
+        final RequestHeadersSpec<?> spec = restClientForUpbit.get()
                 .uri(uriBuilder -> {
-                    uriBuilder.path(path);
+                    uriBuilder.path(path.withUnit(unit));
                     if (params.isEmpty()) {
                         return uriBuilder.build();
                     }
                     params.forEach((key, values) -> values.forEach(value -> uriBuilder.queryParam(key, value)));
                     return uriBuilder.build();
                 })
-                .accept(MediaType.APPLICATION_JSON)
-                .retrieve()
-                .toEntity(String.class);
+                .accept(MediaType.APPLICATION_JSON);
 
-        log.debug(entity.toString());
+        authenticateIfNeeded(spec, path);
 
-        return parseResponse(entity);
+        return parseResponse(spec.retrieve().toEntity(String.class));
     }
 
     public UpbitApiResponse requestGet(
-            final String path
+            final UpbitApiPath path
     ) {
-        return requestGet(path, null);
+        return requestGet(path, null, Map.of());
+    }
+
+    private void authenticateIfNeeded(final RequestHeadersSpec<?> spec, final UpbitApiPath path) {
+        if (path.isPrivate()) {
+            spec.header(HttpHeaders.AUTHORIZATION, jwtCreator.create().WithPrefix());
+        }
     }
 
     private UpbitApiResponse parseResponse(final ResponseEntity<String> responseEntity) {
@@ -74,14 +84,16 @@ public class UpbitClient {
             if (root.has(ApiConstants.ERROR)) {
                 final JsonNode error = root.get(ApiConstants.ERROR);
                 final String name =
-                        error.has(ApiConstants.NAME) ? error.get(ApiConstants.NAME).asText() : ApiConstants.EMPTY;
+                        error.has(ApiConstants.NAME) ? error.get(ApiConstants.NAME).asText()
+                                : ApiConstants.EMPTY_STRING;
                 final String message =
-                        error.has(ApiConstants.MESSAGE) ? error.get(ApiConstants.MESSAGE).asText() : ApiConstants.EMPTY;
+                        error.has(ApiConstants.MESSAGE) ? error.get(ApiConstants.MESSAGE).asText()
+                                : ApiConstants.EMPTY_STRING;
                 return UpbitApiResponse.error(statusCode, name, message);
             }
-            return UpbitApiResponse.error(statusCode, ApiConstants.EMPTY, root.toString());
+            return UpbitApiResponse.error(statusCode, ApiConstants.EMPTY_STRING, root.toString());
         } catch (final Exception e) {
-            return UpbitApiResponse.error(statusCode, ApiConstants.EMPTY, body);
+            return UpbitApiResponse.error(statusCode, ApiConstants.EMPTY_STRING, body);
         }
     }
 }

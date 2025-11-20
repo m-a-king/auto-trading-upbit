@@ -1,5 +1,6 @@
 package com.making.auto_trading_with_upbit_api.constants;
 
+import java.util.Map;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -15,5 +16,6 @@ public final class ApiConstants {
     public static final String MESSAGE = "message";
 
     // Empty Values
-    public static final String EMPTY = "";
+    public static final String EMPTY_STRING = "";
+    public static final Map<Object, Object> EMPTY_MAP = Map.of();
 }

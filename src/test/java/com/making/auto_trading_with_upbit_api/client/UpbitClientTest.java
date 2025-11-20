@@ -23,7 +23,7 @@ class UpbitClientTest {
     @Test
     @DisplayName("마켓 목록 조회 - 파라미터 미포함")
     void testGetAllMarkets() {
-        final UpbitApiResponse response = upbitClient.requestGet(UpbitApiPath.MARKET_ALL.getPath());
+        final UpbitApiResponse response = upbitClient.requestGet(UpbitApiPath.MARKET_ALL);
 
         assertSuccessResponse(response);
         assertThat(response.data()).isNotEmpty();
@@ -38,7 +38,8 @@ class UpbitClientTest {
         );
 
         final UpbitApiResponse response = upbitClient.requestGet(
-                UpbitApiPath.CANDLES_MINUTES.withUnit(1),
+                UpbitApiPath.CANDLES_MINUTES,
+                1,
                 params
         );
 
@@ -47,9 +48,18 @@ class UpbitClientTest {
         assertThat(response.data().size()).isEqualTo(10);
     }
 
+    @Test
+    @DisplayName("계정 잔고 조회 - 인증 필요")
+    void testGetAccounts() {
+        final UpbitApiResponse response = upbitClient.requestGet(UpbitApiPath.ACCOUNTS);
+
+        System.out.println(response);
+        assertSuccessResponse(response);
+    }
+
+
     private void assertSuccessResponse(final UpbitApiResponse response) {
         assertThat(response.success()).isTrue();
-        assertThat(response.data()).isNotNull();
         assertThat(response.data().isArray()).isTrue();
     }
 }
