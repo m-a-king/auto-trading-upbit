@@ -5,13 +5,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import com.making.auto_trading_with_upbit_api.client.config.UpbitApiPath;
 import com.making.auto_trading_with_upbit_api.config.TestContainersConfiguration;
 import com.making.auto_trading_with_upbit_api.dto.UpbitApiResponse;
-import java.util.List;
-import java.util.Map;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 @SpringBootTest
 @Import(TestContainersConfiguration.class)
@@ -32,10 +32,9 @@ class UpbitClientTest {
     @Test
     @DisplayName("분 캔들 조회 - 파라미터 포함")
     void testGetMinuteCandles() {
-        final Map<String, List<String>> params = Map.of(
-                "market", List.of("KRW-BTC"),
-                "count", List.of("10")
-        );
+        final MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("market", "KRW-BTC");
+        params.add("count", "10");
 
         final UpbitApiResponse response = upbitClient.requestGet(
                 UpbitApiPath.CANDLES_MINUTES,
@@ -59,10 +58,9 @@ class UpbitClientTest {
     @Test
     @DisplayName("체결 대기 주문 목록 조회 - 인증 필요, 파라미터 포함")
     void testGetOpenOrders() {
-        final Map<String, List<String>> params = Map.of(
-                "market", List.of("KRW-BTC"),
-                "state", List.of("wait")
-        );
+        final MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add("market", "KRW-BTC");
+        params.add("state", "wait");
 
         final UpbitApiResponse response = upbitClient.requestGet(
                 UpbitApiPath.ORDERS_OPEN,
