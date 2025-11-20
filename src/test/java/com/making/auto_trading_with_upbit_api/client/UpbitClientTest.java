@@ -23,8 +23,13 @@ class UpbitClientTest {
     @Test
     @DisplayName("마켓 목록 조회 - 파라미터 미포함")
     void testGetAllMarkets() {
-        final UpbitApiResponse response = upbitClient.requestGet(UpbitApiPath.MARKET_ALL);
+        // given
+        final UpbitApiPath apiPath = UpbitApiPath.MARKET_ALL;
 
+        // when
+        final UpbitApiResponse response = upbitClient.requestGet(apiPath);
+
+        // then
         assertSuccessResponse(response);
         assertThat(response.data()).isNotEmpty();
     }
@@ -32,16 +37,17 @@ class UpbitClientTest {
     @Test
     @DisplayName("분 캔들 조회 - 파라미터 포함")
     void testGetMinuteCandles() {
+        // given
+        final UpbitApiPath apiPath = UpbitApiPath.CANDLES_MINUTES;
+        final Integer unit = 1;
         final MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("market", "KRW-BTC");
         params.add("count", "10");
 
-        final UpbitApiResponse response = upbitClient.requestGet(
-                UpbitApiPath.CANDLES_MINUTES,
-                1,
-                params
-        );
+        // when
+        final UpbitApiResponse response = upbitClient.requestGet(apiPath, unit, params);
 
+        // then
         assertSuccessResponse(response);
         assertThat(response.data()).isNotEmpty();
         assertThat(response.data().size()).isEqualTo(10);
@@ -50,25 +56,30 @@ class UpbitClientTest {
     @Test
     @DisplayName("계정 잔고 조회 - 인증 필요")
     void testGetAccounts() {
-        final UpbitApiResponse response = upbitClient.requestGet(UpbitApiPath.ACCOUNTS);
+        // given
+        final UpbitApiPath apiPath = UpbitApiPath.ACCOUNTS;
 
+        // when
+        final UpbitApiResponse response = upbitClient.requestGet(apiPath);
+
+        // then
         assertSuccessResponse(response);
     }
 
     @Test
     @DisplayName("체결 대기 주문 목록 조회 - 인증 필요, 파라미터 포함")
     void testGetOpenOrders() {
+        // given
+        final UpbitApiPath apiPath = UpbitApiPath.ORDERS_OPEN;
         final MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("market", "KRW-BTC");
         params.add("state", "wait");
 
-        final UpbitApiResponse response = upbitClient.requestGet(
-                UpbitApiPath.ORDERS_OPEN,
-                params
-        );
+        // when
+        final UpbitApiResponse response = upbitClient.requestGet(apiPath, params);
 
+        // then
         System.out.println(response);
-
         assertSuccessResponse(response);
     }
 
