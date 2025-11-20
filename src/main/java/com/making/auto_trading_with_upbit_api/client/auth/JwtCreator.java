@@ -1,7 +1,7 @@
 package com.making.auto_trading_with_upbit_api.client.auth;
 
 import com.making.auto_trading_with_upbit_api.client.config.UpbitProperty;
-import com.making.auto_trading_with_upbit_api.constants.ApiConstants;
+import com.making.auto_trading_with_upbit_api.client.constants.ApiConstants;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;

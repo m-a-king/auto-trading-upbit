@@ -1,4 +1,4 @@
-package com.making.auto_trading_with_upbit_api.dto;
+package com.making.auto_trading_with_upbit_api.client.dto;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Builder;

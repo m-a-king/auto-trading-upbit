@@ -2,8 +2,8 @@ package com.making.auto_trading_with_upbit_api.client.util;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.making.auto_trading_with_upbit_api.constants.ApiConstants;
-import com.making.auto_trading_with_upbit_api.dto.UpbitApiResponse;
+import com.making.auto_trading_with_upbit_api.client.constants.ApiConstants;
+import com.making.auto_trading_with_upbit_api.client.dto.UpbitApiResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatusCode;

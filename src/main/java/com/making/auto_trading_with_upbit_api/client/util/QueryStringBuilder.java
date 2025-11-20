@@ -1,6 +1,6 @@
 package com.making.auto_trading_with_upbit_api.client.util;
 
-import com.making.auto_trading_with_upbit_api.constants.ApiConstants;
+import com.making.auto_trading_with_upbit_api.client.constants.ApiConstants;
 import lombok.experimental.UtilityClass;
 import org.springframework.util.MultiValueMap;
 

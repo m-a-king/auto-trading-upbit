@@ -2,9 +2,9 @@ package com.making.auto_trading_with_upbit_api.client;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.making.auto_trading_with_upbit_api.client.config.UpbitApiPath;
+import com.making.auto_trading_with_upbit_api.client.constants.UpbitApiPath;
 import com.making.auto_trading_with_upbit_api.config.TestContainersConfiguration;
-import com.making.auto_trading_with_upbit_api.dto.UpbitApiResponse;
+import com.making.auto_trading_with_upbit_api.client.dto.UpbitApiResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

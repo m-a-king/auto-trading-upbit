@@ -1,4 +1,4 @@
-package com.making.auto_trading_with_upbit_api.client.config;
+package com.making.auto_trading_with_upbit_api.client.constants;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

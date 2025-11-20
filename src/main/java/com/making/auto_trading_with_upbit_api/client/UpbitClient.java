@@ -1,9 +1,9 @@
 package com.making.auto_trading_with_upbit_api.client;
 
 import com.making.auto_trading_with_upbit_api.client.auth.JwtCreator;
-import com.making.auto_trading_with_upbit_api.client.config.UpbitApiPath;
+import com.making.auto_trading_with_upbit_api.client.constants.UpbitApiPath;
 import com.making.auto_trading_with_upbit_api.client.util.UpbitResponseParser;
-import com.making.auto_trading_with_upbit_api.dto.UpbitApiResponse;
+import com.making.auto_trading_with_upbit_api.client.dto.UpbitApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
