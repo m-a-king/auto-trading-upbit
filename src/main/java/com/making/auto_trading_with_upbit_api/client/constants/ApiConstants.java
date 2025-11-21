@@ -17,5 +17,4 @@ public final class ApiConstants {
 
     // Empty Values
     public static final String EMPTY_STRING = "";
-    public static final Map<Object, Object> EMPTY_MAP = Map.of();
 }
