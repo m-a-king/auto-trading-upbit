@@ -2,7 +2,13 @@ package com.making.auto_trading_with_upbit_api.client;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-import com.making.auto_trading_with_upbit_api.client.constants.UpbitApiPath;
+import com.making.auto_trading_with_upbit_api.client.path.CandleUpbitApiPath;
+import com.making.auto_trading_with_upbit_api.client.path.CandleUpbitApiPath.CandleMinuteUnit;
+import com.making.auto_trading_with_upbit_api.client.path.CandleUpbitApiPath.CandleUnit;
+import com.making.auto_trading_with_upbit_api.client.path.CandleUpbitApiPath.CandlePathParam;
+import com.making.auto_trading_with_upbit_api.client.path.UpbitApiPath;
+import com.making.auto_trading_with_upbit_api.client.path.CommonUpbitApiPath;
+import com.making.auto_trading_with_upbit_api.client.path.OrderUpbitApiPath;
 import com.making.auto_trading_with_upbit_api.client.dto.UpbitApiResponse;
 import com.making.auto_trading_with_upbit_api.config.TestContainersConfiguration;
 import org.junit.jupiter.api.DisplayName;
@@ -24,7 +30,7 @@ class UpbitClientTest {
     @DisplayName("마켓 목록 조회 - 파라미터 미포함")
     void testGetAllMarkets() {
         // given
-        final UpbitApiPath apiPath = UpbitApiPath.MARKET_ALL;
+        final CommonUpbitApiPath apiPath = CommonUpbitApiPath.MARKET_ALL;
 
         // when
         final UpbitApiResponse response = upbitClient.requestGet(apiPath);
@@ -38,14 +44,14 @@ class UpbitClientTest {
     @DisplayName("분 캔들 조회 - 파라미터 포함")
     void testGetMinuteCandles() {
         // given
-        final UpbitApiPath apiPath = UpbitApiPath.CANDLES_MINUTES;
-        final Integer unit = 1;
+        final UpbitApiPath apiPath = CandleUpbitApiPath.CANDLES;
+        final CandlePathParam units = CandlePathParam.of(CandleUnit.MINUTE, CandleMinuteUnit.ONE);
         final MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("market", "KRW-BTC");
         params.add("count", "10");
 
         // when
-        final UpbitApiResponse response = upbitClient.requestGet(apiPath, unit, params);
+        final UpbitApiResponse response = upbitClient.requestGet(apiPath, units, params);
 
         // then
         assertSuccessResponse(response);
@@ -57,7 +63,7 @@ class UpbitClientTest {
     @DisplayName("계정 잔고 조회 - 인증 필요")
     void testGetAccounts() {
         // given
-        final UpbitApiPath apiPath = UpbitApiPath.ACCOUNTS;
+        final CommonUpbitApiPath apiPath = CommonUpbitApiPath.ACCOUNTS;
 
         // when
         final UpbitApiResponse response = upbitClient.requestGet(apiPath);
@@ -70,13 +76,13 @@ class UpbitClientTest {
     @DisplayName("체결 대기 주문 목록 조회 - 인증 필요, 파라미터 포함")
     void testGetOpenOrders() {
         // given
-        final UpbitApiPath apiPath = UpbitApiPath.ORDERS_OPEN;
+        final UpbitApiPath upbitApiPath = OrderUpbitApiPath.GET_OPEN_ORDERS;
         final MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("market", "KRW-BTC");
         params.add("state", "wait");
 
         // when
-        final UpbitApiResponse response = upbitClient.requestGet(apiPath, params);
+        final UpbitApiResponse response = upbitClient.requestGet(upbitApiPath, params);
 
         // then
         System.out.println(response);

@@ -1,8 +1,9 @@
 package com.making.auto_trading_with_upbit_api.client;
 
 import com.making.auto_trading_with_upbit_api.client.auth.JwtCreator;
-import com.making.auto_trading_with_upbit_api.client.constants.UpbitApiPath;
+import com.making.auto_trading_with_upbit_api.client.path.UpbitApiPath;
 import com.making.auto_trading_with_upbit_api.client.dto.UpbitApiResponse;
+import com.making.auto_trading_with_upbit_api.client.path.PathParam;
 import com.making.auto_trading_with_upbit_api.client.util.QueryStringBuilder;
 import com.making.auto_trading_with_upbit_api.client.util.UpbitResponseParser;
 import lombok.RequiredArgsConstructor;
@@ -24,18 +25,18 @@ public class UpbitClient {
 
     public UpbitApiResponse requestGet(
             final UpbitApiPath path,
-            final Integer unit,
-            final MultiValueMap<String, String> params
+            final PathParam pathParam,
+            final MultiValueMap<String, String> queryParams
     ) {
         final RequestHeadersSpec<?> requestSpec = restClientForUpbit.get()
                 .uri(uriBuilder -> {
-                    uriBuilder.path(path.withUnit(unit));
-                    uriBuilder.queryParams(params);
+                    uriBuilder.path(path.getValue(pathParam));
+                    uriBuilder.queryParams(queryParams);
                     return uriBuilder.build();
                 })
                 .accept(MediaType.APPLICATION_JSON);
 
-        authenticateIfNeeded(path, params, requestSpec);
+        authenticateIfNeeded(path, queryParams, requestSpec);
 
         return responseParser.parse(requestSpec.retrieve().toEntity(String.class));
     }
@@ -60,7 +61,7 @@ public class UpbitClient {
         validateSingleValueMap(params);
 
         final RequestHeadersSpec<?> requestSpec = restClientForUpbit.post()
-                .uri(path.getPath())
+                .uri(path.getValue())
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .body(params.toSingleValueMap());

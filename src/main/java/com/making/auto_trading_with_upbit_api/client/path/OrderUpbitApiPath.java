@@ -1,4 +1,4 @@
-package com.making.auto_trading_with_upbit_api.client.constants;
+package com.making.auto_trading_with_upbit_api.client.path;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ public enum OrderUpbitApiPath implements UpbitApiPath {
     CREATE_TEST_ORDERS("/v1/orders/test", HttpMethod.POST),
     ;
 
-    private final String path;
+    private final String value;
     private final HttpMethod method;
 
     @Override
