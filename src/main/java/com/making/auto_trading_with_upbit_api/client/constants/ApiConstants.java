@@ -1,6 +1,5 @@
 package com.making.auto_trading_with_upbit_api.client.constants;
 
-import java.util.Map;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 

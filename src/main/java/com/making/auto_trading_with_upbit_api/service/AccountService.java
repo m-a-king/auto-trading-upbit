@@ -1,8 +1,9 @@
 package com.making.auto_trading_with_upbit_api.service;
 
 import com.making.auto_trading_with_upbit_api.client.UpbitClient;
-import com.making.auto_trading_with_upbit_api.client.path.CommonUpbitApiPath;
 import com.making.auto_trading_with_upbit_api.client.dto.UpbitApiResponse;
+import com.making.auto_trading_with_upbit_api.client.dto.UpbitRequest;
+import com.making.auto_trading_with_upbit_api.client.path.CommonUpbitApiPath;
 import com.making.auto_trading_with_upbit_api.client.util.JsonConverter;
 import com.making.auto_trading_with_upbit_api.constants.CurrencyCode;
 import com.making.auto_trading_with_upbit_api.service.dto.Account;
@@ -24,7 +25,8 @@ public class AccountService {
      * 전체 잔고 조회
      */
     public List<Account> getAccounts() {
-        final UpbitApiResponse response = upbitClient.requestGet(CommonUpbitApiPath.ACCOUNTS);
+        final UpbitRequest request = UpbitRequest.of(CommonUpbitApiPath.ACCOUNTS);
+        final UpbitApiResponse response = upbitClient.requestGet(request);
 
         if (response.success()) {
             return jsonConverter.toList(response.data(), Account.class);
