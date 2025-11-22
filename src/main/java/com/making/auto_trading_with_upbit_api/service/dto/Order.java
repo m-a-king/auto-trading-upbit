@@ -1,6 +1,7 @@
 package com.making.auto_trading_with_upbit_api.service.dto;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 /**
  * 업비트 주문 정보
@@ -15,6 +16,7 @@ import java.math.BigDecimal;
  * @param volume          주문 수량
  * @param remainingVolume 미체결 수량
  * @param executedVolume  체결된 수량
+ * @param executedFunds   총 체결 금액 (목록 조회에서만 제공, 개별 조회 시 null)
  * @param reservedFee     예약된 수수료
  * @param remainingFee    남은 수수료
  * @param paidFee         사용된 수수료
@@ -25,6 +27,7 @@ import java.math.BigDecimal;
  * @param smpType         SMP 모드 (cancel_maker, cancel_taker, reduce)
  * @param preventedVolume SMP로 인해 취소된 수량
  * @param preventedLocked SMP로 인해 해제된 자산
+ * @param trades          체결 내역 목록 (개별 조회에서만 제공, 목록 조회 시 null)
  */
 public record Order(
         String uuid,
@@ -37,6 +40,7 @@ public record Order(
         BigDecimal volume,
         BigDecimal remainingVolume,
         BigDecimal executedVolume,
+        BigDecimal executedFunds,
         BigDecimal reservedFee,
         BigDecimal remainingFee,
         BigDecimal paidFee,
@@ -46,7 +50,8 @@ public record Order(
         String identifier,
         String smpType,
         BigDecimal preventedVolume,
-        BigDecimal preventedLocked
+        BigDecimal preventedLocked,
+        List<Trade> trades
 ) {
     /**
      * 매수 주문 여부
