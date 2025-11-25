@@ -8,19 +8,24 @@ import org.springframework.http.HttpMethod;
 @RequiredArgsConstructor
 public enum OrderUpbitApiPath implements UpbitApiPath {
 
-    GET_ORDER("v1/order", HttpMethod.GET),
+    // 조회
+    GET_ORDER_CHANCE("/v1/orders/chance", HttpMethod.GET),
+    GET_ORDER("/v1/order", HttpMethod.GET),
     GET_ORDERS("/v1/orders", HttpMethod.GET),
     GET_OPEN_ORDERS("/v1/orders/open", HttpMethod.GET),
     GET_CLOSED_ORDERS("/v1/orders/closed", HttpMethod.GET),
 
-    CREATE_ORDERS("/v1/orders", HttpMethod.POST),
-    CANCEL_AND_CREATE_ORDERS("v1/orders/cancel_and_new", HttpMethod.POST),
+    // 생성
+    CREATE_ORDER("/v1/orders", HttpMethod.POST),
+    CREATE_TEST_ORDER("/v1/orders/test", HttpMethod.POST),
 
-    CANCEL_ORDER("v1/order", HttpMethod.DELETE),
-    CANCEL_ORDERS("v1/orders", HttpMethod.DELETE),
-    CANCEL_OPEN_ORDERS("v1/orders/open", HttpMethod.DELETE),
+    // 취소
+    CANCEL_ORDER("/v1/order", HttpMethod.DELETE),
+    CANCEL_ORDERS("/v1/orders", HttpMethod.DELETE),
+    CANCEL_ALL_ORDERS("/v1/orders/open", HttpMethod.DELETE),
 
-    CREATE_TEST_ORDERS("/v1/orders/test", HttpMethod.POST),
+    // 취소 후 재주문
+    CANCEL_AND_NEW_ORDER("/v1/orders/cancel_and_new", HttpMethod.POST),
     ;
 
     private final String value;

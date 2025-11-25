@@ -2,14 +2,14 @@ package com.making.auto_trading_with_upbit_api.client;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.making.auto_trading_with_upbit_api.client.dto.UpbitApiResponse;
+import com.making.auto_trading_with_upbit_api.client.dto.UpbitRequest;
 import com.making.auto_trading_with_upbit_api.client.path.CandleUpbitApiPath;
 import com.making.auto_trading_with_upbit_api.client.path.CandleUpbitApiPath.CandleMinuteUnit;
-import com.making.auto_trading_with_upbit_api.client.path.CandleUpbitApiPath.CandleUnit;
 import com.making.auto_trading_with_upbit_api.client.path.CandleUpbitApiPath.CandlePathParam;
-import com.making.auto_trading_with_upbit_api.client.path.UpbitApiPath;
+import com.making.auto_trading_with_upbit_api.client.path.CandleUpbitApiPath.CandleUnit;
 import com.making.auto_trading_with_upbit_api.client.path.CommonUpbitApiPath;
 import com.making.auto_trading_with_upbit_api.client.path.OrderUpbitApiPath;
-import com.making.auto_trading_with_upbit_api.client.dto.UpbitApiResponse;
 import com.making.auto_trading_with_upbit_api.config.TestContainersConfiguration;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,10 +30,10 @@ class UpbitClientTest {
     @DisplayName("마켓 목록 조회 - 파라미터 미포함")
     void testGetAllMarkets() {
         // given
-        final CommonUpbitApiPath apiPath = CommonUpbitApiPath.MARKET_ALL;
+        final UpbitRequest request = UpbitRequest.of(CommonUpbitApiPath.MARKET_ALL);
 
         // when
-        final UpbitApiResponse response = upbitClient.requestGet(apiPath);
+        final UpbitApiResponse response = upbitClient.requestGet(request);
 
         // then
         assertSuccessResponse(response);
@@ -44,14 +44,14 @@ class UpbitClientTest {
     @DisplayName("분 캔들 조회 - 파라미터 포함")
     void testGetMinuteCandles() {
         // given
-        final UpbitApiPath apiPath = CandleUpbitApiPath.CANDLES;
         final CandlePathParam units = CandlePathParam.of(CandleUnit.MINUTE, CandleMinuteUnit.ONE);
         final MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("market", "KRW-BTC");
         params.add("count", "10");
+        final UpbitRequest request = UpbitRequest.of(CandleUpbitApiPath.CANDLES, units, params);
 
         // when
-        final UpbitApiResponse response = upbitClient.requestGet(apiPath, units, params);
+        final UpbitApiResponse response = upbitClient.requestGet(request);
 
         // then
         assertSuccessResponse(response);
@@ -63,10 +63,10 @@ class UpbitClientTest {
     @DisplayName("계정 잔고 조회 - 인증 필요")
     void testGetAccounts() {
         // given
-        final CommonUpbitApiPath apiPath = CommonUpbitApiPath.ACCOUNTS;
+        final UpbitRequest request = UpbitRequest.of(CommonUpbitApiPath.ACCOUNTS);
 
         // when
-        final UpbitApiResponse response = upbitClient.requestGet(apiPath);
+        final UpbitApiResponse response = upbitClient.requestGet(request);
 
         // then
         assertSuccessResponse(response);
@@ -76,13 +76,13 @@ class UpbitClientTest {
     @DisplayName("체결 대기 주문 목록 조회 - 인증 필요, 파라미터 포함")
     void testGetOpenOrders() {
         // given
-        final UpbitApiPath upbitApiPath = OrderUpbitApiPath.GET_OPEN_ORDERS;
         final MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("market", "KRW-BTC");
         params.add("state", "wait");
+        final UpbitRequest request = UpbitRequest.of(OrderUpbitApiPath.GET_OPEN_ORDERS, params);
 
         // when
-        final UpbitApiResponse response = upbitClient.requestGet(upbitApiPath, params);
+        final UpbitApiResponse response = upbitClient.requestGet(request);
 
         // then
         System.out.println(response);

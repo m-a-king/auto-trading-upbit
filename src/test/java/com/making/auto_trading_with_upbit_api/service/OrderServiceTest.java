@@ -4,7 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.making.auto_trading_with_upbit_api.config.TestContainersConfiguration;
 import com.making.auto_trading_with_upbit_api.service.dto.Order;
-import java.math.BigDecimal;
+import com.making.auto_trading_with_upbit_api.service.dto.OrderChance;
+import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,23 +17,37 @@ import org.springframework.context.annotation.Import;
 class OrderServiceTest {
 
     @Autowired
-    private OrderService orderService;
+    private OrderQueryService orderQueryService;
 
     @Test
-    @DisplayName("시장가 매수 주문 생성 (테스트)")
-    void testCreateMarketBuyOrder() {
+    @DisplayName("주문 가능 정보 조회")
+    void testGetOrderChance() {
         // given
         final String market = "KRW-BTC";
-        final BigDecimal price = new BigDecimal("6000"); // 최소 주문 금액 이상
 
         // when
-        final Order order = orderService.createMarketBuyOrderTest(market, price);
+        final OrderChance orderChance = orderQueryService.getOrderChance(market);
 
         // then
-        assertThat(order).isNotNull();
-        assertThat(order.market()).isEqualTo(market);
-        assertThat(order.side()).isEqualTo("bid");
-        assertThat(order.ordType()).isEqualTo("price");
-        assertThat(order.state()).isIn("wait", "watch", "done");
+        assertThat(orderChance).isNotNull();
+        assertThat(orderChance.market()).isNotNull();
+        assertThat(orderChance.market().id()).isEqualTo(market);
+    }
+
+    @Test
+    @DisplayName("체결 대기 주문 목록 조회")
+    void testGetOpenOrders() {
+        // given
+        // (기존 체결 대기 주문이 있을 수도 있고 없을 수도 있음)
+
+        // when
+        final List<Order> openOrders = orderQueryService.getOpenOrders();
+
+        // then
+        assertThat(openOrders).isNotNull();
+        // 체결 대기 주문이 있다면, state가 'wait' 또는 'watch'여야 함
+        openOrders.forEach(order -> {
+            assertThat(order.state()).isIn("wait", "watch");
+        });
     }
 }
