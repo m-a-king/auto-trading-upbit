@@ -57,7 +57,7 @@ class CandleDataServiceTest {
         final int count = 10;
 
         // when
-        final List<Candle> candles = candleDataService.getCandles(market, minuteUnit, count);
+        final List<Candle> candles = candleDataService.getMinuteCandles(market, minuteUnit, count);
 
         // then
         assertThat(candles).isNotNull();

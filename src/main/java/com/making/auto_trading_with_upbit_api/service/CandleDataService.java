@@ -53,7 +53,7 @@ public class CandleDataService {
      * @param count      조회할 캔들 개수 (최대 200)
      * @return 캔들 목록 (최신순)
      */
-    public List<Candle> getCandles(
+    public List<Candle> getMinuteCandles(
             final String market,
             final CandleMinuteUnit minuteUnit,
             final int count

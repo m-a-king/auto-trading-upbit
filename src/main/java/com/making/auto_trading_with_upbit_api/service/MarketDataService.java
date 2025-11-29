@@ -1,6 +1,7 @@
 package com.making.auto_trading_with_upbit_api.service;
 
 import com.making.auto_trading_with_upbit_api.client.UpbitClient;
+import com.making.auto_trading_with_upbit_api.client.constants.ApiConstants;
 import com.making.auto_trading_with_upbit_api.client.dto.UpbitApiResponse;
 import com.making.auto_trading_with_upbit_api.client.dto.UpbitRequest;
 import com.making.auto_trading_with_upbit_api.client.path.CommonUpbitApiPath;
@@ -46,7 +47,7 @@ public class MarketDataService {
      */
     public List<Ticker> getTickers(final List<String> markets) {
         final MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        markets.forEach(market -> params.add("markets", market));
+        markets.forEach(market -> params.add(ApiConstants.MARKETS, market));
 
         final UpbitRequest request = UpbitRequest.of(CommonUpbitApiPath.TICKER, params);
         final UpbitApiResponse response = upbitClient.requestGet(request);
