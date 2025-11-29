@@ -10,6 +10,7 @@ public final class ApiConstants {
     public static final String PARSE_ERROR = "PARSE_ERROR";
 
     // JSON Fields & API Parameters
+    // TODO 분리 시점?
     public static final String ERROR = "error";
     public static final String NAME = "name";
     public static final String MESSAGE = "message";

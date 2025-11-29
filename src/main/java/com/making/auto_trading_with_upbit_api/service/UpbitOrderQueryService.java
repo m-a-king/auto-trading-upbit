@@ -1,6 +1,7 @@
 package com.making.auto_trading_with_upbit_api.service;
 
 import com.making.auto_trading_with_upbit_api.client.UpbitClient;
+import com.making.auto_trading_with_upbit_api.client.constants.ApiConstants;
 import com.making.auto_trading_with_upbit_api.client.dto.UpbitApiResponse;
 import com.making.auto_trading_with_upbit_api.client.dto.UpbitRequest;
 import com.making.auto_trading_with_upbit_api.client.path.OrderUpbitApiPath;
@@ -28,7 +29,7 @@ public class UpbitOrderQueryService implements OrderQueryService {
     @Override
     public OrderChance getOrderChance(final String market) {
         final MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("market", market);
+        params.add(ApiConstants.MARKET, market);
 
         final UpbitRequest request = UpbitRequest.of(OrderUpbitApiPath.GET_ORDER_CHANCE, params);
         final UpbitApiResponse response = upbitClient.requestGet(request);
@@ -44,7 +45,7 @@ public class UpbitOrderQueryService implements OrderQueryService {
     @Override
     public Order getOrder(final String uuidOrIdentifier) {
         final MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("uuid", uuidOrIdentifier);
+        params.add(ApiConstants.UUID, uuidOrIdentifier);
 
         final UpbitRequest request = UpbitRequest.of(OrderUpbitApiPath.GET_ORDER, params);
         final UpbitApiResponse response = upbitClient.requestGet(request);
@@ -60,7 +61,7 @@ public class UpbitOrderQueryService implements OrderQueryService {
     @Override
     public List<Order> getOrders(final List<String> ids) {
         final MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        ids.forEach(id -> params.add("uuids[]", id));
+        ids.forEach(id -> params.add(ApiConstants.UUIDS_ARRAY, id));
 
         final UpbitRequest request = UpbitRequest.of(OrderUpbitApiPath.GET_ORDERS, params);
         final UpbitApiResponse response = upbitClient.requestGet(request);
@@ -89,7 +90,7 @@ public class UpbitOrderQueryService implements OrderQueryService {
     @Override
     public List<Order> getClosedOrders(final int window) {
         final MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
-        params.add("days", String.valueOf(window));
+        params.add(ApiConstants.DAYS, String.valueOf(window));
 
         final UpbitRequest request = UpbitRequest.of(OrderUpbitApiPath.GET_CLOSED_ORDERS, params);
         final UpbitApiResponse response = upbitClient.requestGet(request);
